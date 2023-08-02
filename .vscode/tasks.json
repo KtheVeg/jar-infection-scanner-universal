@@ -36,6 +36,16 @@
                 "${workspaceFolder}/jarinfectionscanneruniversal.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Benchmark",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "run",
+                "--configuration",
+                "Release"
+            ],
         }
     ]
 }
