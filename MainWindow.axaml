@@ -1,0 +1,12 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="jarinfectionscanneruniversal.MainWindow"
+        Title="K's Jarfile Scanner"
+        Width="800" Height="600">
+
+  <StackPanel Width="800" Height="600">
+    <StackPanel Orientation="Horizontal" Width="800" Height="30">
+      <TextBox Watermark="Path to File/Folder" Width="600" Height="30" x:Name="pathInput" /><Button Content="Browse" Width="100" Height="30" Click="browseFiles_Click"/>
+    </StackPanel>
+  </StackPanel>
+</Window>

@@ -1,0 +1,26 @@
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# NuGet packages
+*.nupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# MSTest test Results
+TestResults/
+
+# Resharper files
+_ReSharper*/
+
+# Build results of an Azure Functions project
+**/bin
+**/obj
