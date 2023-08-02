@@ -10,8 +10,8 @@
       
     </StackPanel>
     <Border BorderBrush="#888888" BorderThickness="1" Width="790" Height="550" Margin="5">
-      <ScrollViewer Width="800" Height="540" x:Name="outputScroll">
-        <TextBlock Text="Select a path and click 'Scan' to get started" Width="790" Height="540" x:Name="output" FontFamily="monospace" />
+      <ScrollViewer Width="780" Height="540" x:Name="outputScroll">
+        <TextBlock Text="Select a path and click 'Scan' to get started" Width="780" TextWrapping="Wrap" x:Name="output" FontFamily="monospace" />
       </ScrollViewer>
     </Border>
   </StackPanel>

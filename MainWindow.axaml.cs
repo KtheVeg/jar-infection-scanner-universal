@@ -6,8 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using System.Collections.Generic;
 using System;
-using Avalonia.Data.Converters;
-using System.Globalization;
+using System.Threading.Tasks;
 
 namespace jarinfectionscanneruniversal
 {
@@ -81,7 +80,7 @@ namespace jarinfectionscanneruniversal
 					// Good directory. Start with scanning
 					outputTextBlock.Text += string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
 					Scanner scanner = new(scanDirectory, outputTextBlock);
-					scanner.Scan();
+					// await scanner.Scan();
 				} else // Bad directory, let user know
 					outputTextBlock.Text += string.Format("\n[{0}] The path you provided is invalid.", DateTime.Now.ToString(dateFormat));
 			} else

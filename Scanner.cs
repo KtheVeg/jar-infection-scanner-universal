@@ -27,44 +27,49 @@ namespace jarinfectionscanneruniversal
 			outputTextBlock = _outputTextBlock;
 		}
 		
-		public bool Scan()
+		public async Task<bool> Scan()
 		{
 			if (scanDirectory != null)
 			{
-				Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories).ToList().ForEach(file =>
+				await Task.Run(() =>
 				{
-					outputTextBlock.Text += string.Format("\n[{0}]: Scanning File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
-					
-					ZipArchive zipArchive = ZipFile.OpenRead(file);
+					string[] files = Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories);
 
-					foreach (ZipArchiveEntry entry in zipArchive.Entries)
+					// Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories).ToList().ForEach(file =>
+					foreach (string file in files)
 					{
-						if (!entry.Name.EndsWith(".class"))
-							continue;
-							
-						Stream fileStream = entry.Open();
-						// Get up to the first int.MaxValue bytes of the file
-						byte[] buffer = new byte[];
+						outputTextBlock.Text += string.Format("\n[{0}]: Scanning File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
 
-						fileStream.Read(buffer, 0, (int)entry.Length);
+						ZipArchive zipArchive = ZipFile.OpenRead(file);
 
-						foreach (byte[] signature in fileSignatures)
+						foreach (ZipArchiveEntry entry in zipArchive.Entries)
 						{
-							// Check if the file contains the signature
-							if (buffer.Take(signature.Length).SequenceEqual(signature))
-							{
-								outputTextBlock.Text += string.Format("\n[{0}]: Infected File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
+							if (!entry.Name.EndsWith(".class"))
 								continue;
-							}
 
-							// else
-							outputTextBlock.Text += string.Format("\n[{0}]: Clean File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
+							Stream fileStream = entry.Open();
+							byte[] buffer = new byte[(int)entry.Length];
+
+							fileStream.Read(buffer, 0, (int)entry.Length);
+
+							foreach (byte[] signature in fileSignatures)
+							{
+								// Check if the file contains the signature
+								if (buffer.Take(signature.Length).SequenceEqual(signature))
+								{
+									outputTextBlock.Text += string.Format("\n[{0}]: Infected File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
+									continue;
+								}
+
+								// else
+								outputTextBlock.Text += string.Format("\n[{0}]: Clean File: {1}", DateTime.Now.ToString(MainWindow.dateFormat), file);
+							
+							}
 						}
 					}
 				});
 			}
 			return false;
 		}
-
 	}
 }
