@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
 using Avalonia.Threading;
+using System.Runtime.InteropServices;
 
 namespace jarinfectionscanneruniversal
 {
@@ -24,6 +25,7 @@ namespace jarinfectionscanneruniversal
 		};
 		public readonly List<string> caughtFiles = new();
 		public readonly List<string> problematicFiles = new();
+		public readonly List<string> problematicReason = new();
 		private bool detectedFile = false;
 		
 		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll)
@@ -42,13 +44,30 @@ namespace jarinfectionscanneruniversal
 					await Task.Run(() =>
 					{
 						#pragma warning disable IDE0057
-						string[] files = Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories);
+						string[] files;
+						if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+						{
+							files = Directory.GetFiles(scanDirectory.Path.ToString().Substring(8), "*.jar", SearchOption.AllDirectories);
+						}
+						else {
+							files = Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories);
+						}
 						#pragma warning restore IDE0057
 						// Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories).ToList().ForEach(file =>
 						foreach (string file in files)
 						{
 							SendMessageToOutput(string.Format("Scanning File: {0}", file));
-							ZipArchive zipArchive = ZipFile.OpenRead(file);
+							ZipArchive zipArchive;
+							try {
+								zipArchive = ZipFile.OpenRead(file);
+							}
+							catch (System.IO.InvalidDataException e)
+							{
+								SendMessageToOutput(string.Format("WARN: The file {0} had some problems opening. This could be a corrupted jar file.", file));
+								problematicFiles.Add(file);
+								problematicReason.Add("Broken Jar File");
+								continue;
+							}
 
 							bool flagged = false;
 
@@ -62,6 +81,7 @@ namespace jarinfectionscanneruniversal
 								{
 									SendMessageToOutput(string.Format("WARN: The file [0] contains a class larger than 2 GB. This could be either terrible coding by the jarfile developer, or a sign of infection", file));
 									problematicFiles.Add(file);
+									problematicReason.Add("Class larger than 2 GB");
 								}
 								byte[] buffer = new byte[(int)entry.Length];
 

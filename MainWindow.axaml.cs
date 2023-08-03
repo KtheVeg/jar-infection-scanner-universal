@@ -7,6 +7,7 @@ using Avalonia.Media;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace jarinfectionscanneruniversal
 {
@@ -45,7 +46,14 @@ namespace jarinfectionscanneruniversal
 			pathTextBlock ??= this.FindControl<TextBox>("pathInput");
 			
 			if (paths.Count > 0 && pathTextBlock != null)
-				pathTextBlock.Text = paths[0].Path.ToString().Substring(7);
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				{
+					pathTextBlock.Text = paths[0].Path.ToString().Substring(8);
+				}
+				else
+				{
+					pathTextBlock.Text = paths[0].Path.ToString().Substring(7);
+				}
 		}
 		public async void ScanClick(object sender, RoutedEventArgs e)
 		{
@@ -92,19 +100,21 @@ namespace jarinfectionscanneruniversal
 							outputTextBlock.Text += "\n" + file;
 							scrollViewer.ScrollToEnd();
 						}
-						outputTextBlock.Text += "\n\nIn addition to the found files, there were problematic files \nYou should delete these files.";
+						outputTextBlock.Text += "\n\nIn addition to the found files, there were problematic files. Consider deleting these files and redownloading them.";
 						foreach (string file in scanner.problematicFiles)
 						{
 							outputTextBlock.Text += "\n" + file;
+							outputTextBlock.Text += "\n" + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)];
 							scrollViewer.ScrollToEnd();
 						}
 					} else {
 						if (scanner.problematicFiles.Count != 0)
 						{
-							outputTextBlock.Text += "\n\nThere were a few files that had problems scanning. \nYou should delete these files.";
+							outputTextBlock.Text += "\n\nThere were a few files that had problems scanning. Consider deleting these files and redownloading them.";
 							foreach (string file in scanner.problematicFiles)
 							{
 								outputTextBlock.Text += "\n" + file;
+								outputTextBlock.Text += "\n(Reason: " + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)] + ")";
 								scrollViewer.ScrollToEnd();
 							}
 							outputTextBlock.Text += "\n\nThere were no infected files found.";
