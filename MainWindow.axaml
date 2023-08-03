@@ -4,6 +4,7 @@
         x:Class="jarinfectionscanneruniversal.MainWindow"
         Title="Universal Jar Scanner"
         CanResize="false"
+        Icon="/icon.png"
         MinWidth="800" MaxWidth="800"
         MinHeight="600" MaxHeight="600"
         Width="800" Height="600">
