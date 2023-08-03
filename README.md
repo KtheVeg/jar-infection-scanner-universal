@@ -10,6 +10,8 @@ Simply run the provided executable, write a scan path in the UI (or click `Brows
 
 The output will notify you of all infected files.
 
+Catches stage 0 and stage 3 infected files (tested with the files at [VolfLife/fractureiser-samples](https://github.com/VolfLife/fractureiser-samples))
+
 ## Building
 The tool uses the [Avalonia](https://www.nuget.org/packages/Avalonia) package obtained from NuGet. Obtain a copy of all dependancies then build the .NET project like normal.
 
