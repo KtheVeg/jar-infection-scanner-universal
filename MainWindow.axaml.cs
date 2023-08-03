@@ -57,14 +57,17 @@ namespace jarinfectionscanneruniversal
 			#pragma warning disable CS8602 // Dereference of a possibly null reference.
 			if (pathTextBlock.Text != null)
 			{
+				pathTextBlock.Text ??= "";
+    			pathTextBlock.Text = pathTextBlock.Text.Replace("\"","");
 				// Parse the directory entered by the user
 				IStorageItem? scanDirectory = await this.StorageProvider.TryGetFolderFromPathAsync(pathTextBlock.Text);
 				
 
 				if (scanDirectory != null)
 				{
+					this.FindControl<Button>("scanButton").IsEnabled = false;
 					// Good directory. Start with scanning
-					outputTextBlock.Text += string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
+					outputTextBlock.Text = string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
 					Scanner scanner = new(scanDirectory, outputTextBlock, scrollViewer, progressBar);
 					progressBar.ShowProgressText = true;
 					await scanner.Scan();
@@ -102,6 +105,7 @@ namespace jarinfectionscanneruniversal
 							scrollViewer.ScrollToEnd();
 						}
 					}
+					this.FindControl<Button>("scanButton").IsEnabled = true;
 				} else // Bad directory, let user know
 					outputTextBlock.Text += string.Format("\n[{0}] The path you provided is invalid.", DateTime.Now.ToString(dateFormat));
 			} else
@@ -109,13 +113,6 @@ namespace jarinfectionscanneruniversal
 			#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 			
-		}
-		private void TextChange(object? sender, EventArgs? e)
-		{
-			if (sender == null) return;
-			TextBox textBox = (TextBox)sender;
-			textBox.Text ??= "";
-    		textBox.Text = textBox.Text.Replace("\"","");
 		}
 		private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 	}

@@ -31,7 +31,7 @@ namespace jarinfectionscanneruniversal
 		public readonly List<string> problematicReason = new();
 		private bool detectedFile = false;
 		
-		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll, ProgressBar _progressBar)
+		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll, ProgressBar? _progressBar)
 		{
 			scanDirectory = _scanDirectory;
 			outputTextBlock = _outputTextBlock;

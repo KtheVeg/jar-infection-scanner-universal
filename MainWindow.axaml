@@ -12,7 +12,7 @@
   <StackPanel Width="800" Height="600">
     <DockPanel Width="800" Height="30">
       <StackPanel Orientation="Horizontal" Width="800" Height="30">
-        <TextBox Watermark="Path to Folder" Width="600" Height="30" x:Name="pathInput" /><Button Content="Browse" Width="100" Height="30" Click="BrowseFilesClick"/><Button Content="Scan" Width="100" Height="30" Click="ScanClick" />
+        <TextBox Watermark="Path to Folder" Width="600" Height="30" x:Name="pathInput"  /><Button Content="Browse" Width="100" Height="30" Click="BrowseFilesClick"/><Button Content="Scan" Width="100" Height="30" Click="ScanClick" x:Name="scanButton" />
       </StackPanel>
     </DockPanel>
     <Border BorderBrush="#888888" BorderThickness="1" Width="780" Height="500" Margin="5">
