@@ -16,6 +16,9 @@ namespace jarinfectionscanneruniversal
 		private readonly IStorageItem? scanDirectory;
 		private readonly TextBlock outputTextBlock;
 		private readonly ScrollViewer? scroll;
+		private readonly ProgressBar? progressBar;
+		private int totalFiles = 0;
+		private int scannedFiles = 0;
 		
 		private static readonly byte[][] fileSignatures = new byte[][]
 		{
@@ -28,12 +31,15 @@ namespace jarinfectionscanneruniversal
 		public readonly List<string> problematicReason = new();
 		private bool detectedFile = false;
 		
-		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll)
+		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll, ProgressBar _progressBar)
 		{
 			scanDirectory = _scanDirectory;
 			outputTextBlock = _outputTextBlock;
 			scroll = _scroll;
+			progressBar = _progressBar;
 			detectedFile = false;
+			totalFiles = 0;
+			scannedFiles = 0;
 		}
 		
 		public async Task<bool> Scan()
@@ -53,7 +59,9 @@ namespace jarinfectionscanneruniversal
 							files = Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories);
 						}
 						#pragma warning restore IDE0057
-						// Directory.GetFiles(scanDirectory.Path.ToString().Substring(7), "*.jar", SearchOption.AllDirectories).ToList().ForEach(file =>
+						
+						totalFiles = files.Length;
+
 						foreach (string file in files)
 						{
 							SendMessageToOutput(string.Format("Scanning File: {0}", file));
@@ -66,6 +74,8 @@ namespace jarinfectionscanneruniversal
 								SendMessageToOutput(string.Format("WARN: The file {0} had some problems opening. This could be a corrupted jar file.", file));
 								problematicFiles.Add(file);
 								problematicReason.Add("Broken Jar File");
+								scannedFiles++;
+								UpdateProgress((double)(scannedFiles/totalFiles));
 								continue;
 							}
 
@@ -79,9 +89,13 @@ namespace jarinfectionscanneruniversal
 								Stream fileStream = entry.Open();
 								if (entry.Length > int.MaxValue)
 								{
-									SendMessageToOutput(string.Format("WARN: The file [0] contains a class larger than 2 GB. This could be either terrible coding by the jarfile developer, or a sign of infection", file));
-									problematicFiles.Add(file);
-									problematicReason.Add("Class larger than 2 GB");
+									if (!problematicFiles.Contains(file))
+									{
+										SendMessageToOutput(string.Format("WARN: The file [0] contains a class larger than 2 GB. This could be either terrible coding by the jarfile developer, or a sign of infection", file));
+										problematicFiles.Add(file);
+										problematicReason.Add("Class larger than 2 GB");
+									}
+									continue;
 								}
 								byte[] buffer = new byte[(int)entry.Length];
 
@@ -113,10 +127,14 @@ namespace jarinfectionscanneruniversal
 									if (flagged) break;
 
 								}
+								fileStream.Close();
 								if (flagged) break;
 								
 							}
 							if (!flagged) SendMessageToOutput(string.Format("File is clean: {0}", file));
+							scannedFiles++;
+							UpdateProgress((double)scannedFiles/totalFiles);
+							
 							zipArchive.Dispose();
 						}
 					});
@@ -138,6 +156,13 @@ namespace jarinfectionscanneruniversal
 			Dispatcher.UIThread.Invoke(() => {
 				outputTextBlock.Text += string.Format("\n[{0}]: {1}", DateTime.Now.ToString(MainWindow.dateFormat), msg);
 				scroll?.ScrollToEnd();
+			});
+		}
+		void UpdateProgress(double newValue)
+		{
+			Dispatcher.UIThread.Invoke(() => {
+				if (progressBar == null) return;
+				progressBar.Value = Math.Floor(newValue * 100);
 			});
 		}
 	}

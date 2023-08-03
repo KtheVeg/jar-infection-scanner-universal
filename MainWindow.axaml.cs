@@ -16,6 +16,7 @@ namespace jarinfectionscanneruniversal
 		private TextBox? pathTextBlock;
 		private readonly TextBlock? outputTextBlock;
 		private readonly ScrollViewer? scrollViewer;
+		private readonly ProgressBar? progressBar;
 
 		public static readonly string dateFormat = "yyyy-MM-dd HH:mm:ss.fff";
 		
@@ -28,6 +29,7 @@ namespace jarinfectionscanneruniversal
 			pathTextBlock = this.FindControl<TextBox>("pathInput");
 			outputTextBlock = this.FindControl<TextBlock>("output");
 			scrollViewer = this.FindControl<ScrollViewer>("outputScroll");
+			progressBar = this.FindControl<ProgressBar>("progress");
 		}
 
 
@@ -63,7 +65,8 @@ namespace jarinfectionscanneruniversal
 				{
 					// Good directory. Start with scanning
 					outputTextBlock.Text += string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
-					Scanner scanner = new(scanDirectory, outputTextBlock, scrollViewer);
+					Scanner scanner = new(scanDirectory, outputTextBlock, scrollViewer, progressBar);
+					progressBar.ShowProgressText = true;
 					await scanner.Scan();
 					outputTextBlock.Text += string.Format("\n[{0}] Scan Finished.", DateTime.Now.ToString(dateFormat));
 					if (scanner.caughtFiles.Count != 0)
@@ -106,6 +109,13 @@ namespace jarinfectionscanneruniversal
 			#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 			
+		}
+		private void TextChange(object? sender, EventArgs? e)
+		{
+			if (sender == null) return;
+			TextBox textBox = (TextBox)sender;
+			textBox.Text ??= "";
+    		textBox.Text = textBox.Text.Replace("\"","");
 		}
 		private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 	}
