@@ -7,6 +7,8 @@ This tool was also co-developped by [@SSUnlimited9](https://github.com/SSUnlimit
 This tool is currently not fully developped. This tool should assist with finding potential malware, but in its current state is not fully tested. I'm not responsible for damages caused by the tool.
 
 ## Usage
+Requires .NET 6 runtime. You can install it using [this link](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+
 Simply run the provided executable, write a scan path in the UI (or click `Browse`) then click `Scan` to start scanning.
 
 The output will notify you of all infected files.
