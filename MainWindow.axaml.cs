@@ -30,12 +30,6 @@ namespace jarinfectionscanneruniversal
 			scrollViewer = this.FindControl<ScrollViewer>("outputScroll");
 		}
 
-		// public void Button_Click(object sender, RoutedEventArgs e)
-		// {
-		// 	// Change button text when button is clicked.
-		// 	Button button = (Button)sender;
-		// 	button.Content = "Hello, Avalonia!";
-		// }
 
 		public async void BrowseFilesClick(object sender, RoutedEventArgs e)
 		{
@@ -57,26 +51,6 @@ namespace jarinfectionscanneruniversal
 		}
 		public async void ScanClick(object sender, RoutedEventArgs e)
 		{
-			// pathTextBlock ??= this.FindControl<TextBox>("pathInput");
-			// outputTextBlock ??= this.FindControl<TextBlock>("output");
-			
-			// Construct an IStorageItem from the path provided in the text box.
-			// if (pathTextBlock != null && outputTextBlock != null)
-			// {
-            //     string path = pathTextBlock.Text ?? "";
-			// 	IStorageItem? scanDirectory = await this.StorageProvider.TryGetFolderFromPathAsync(path);
-				
-			// 	if (scanDirectory != null)
-			// 	{
-			// 		outputTextBlock.Text += "\nScanning " + scanDirectory.Path.ToString().Substring(7) + "...";
-			// 		Scanner scanner = new Scanner(scanDirectory);
-			// 	} else {
-			// 		DateTime now = DateTime.Now;
-			// 		outputTextBlock.Text += string.Format("\n[{0}] ", now.ToString(dateFormat));
-			// 		outputTextBlock.Text += "The path you provided is invalid.";
-			// 	}
-				
-			// } else throw new NullReferenceException("Path block somehow doesn't exist or is null.");
 
 			#pragma warning disable CS8602 // Dereference of a possibly null reference.
 			if (pathTextBlock.Text != null)

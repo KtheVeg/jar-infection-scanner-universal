@@ -61,8 +61,8 @@ namespace jarinfectionscanneruniversal
 							try {
 								zipArchive = ZipFile.OpenRead(file);
 							}
-							catch (System.IO.InvalidDataException e)
-							{
+							catch (InvalidDataException)
+                            {
 								SendMessageToOutput(string.Format("WARN: The file {0} had some problems opening. This could be a corrupted jar file.", file));
 								problematicFiles.Add(file);
 								problematicReason.Add("Broken Jar File");
