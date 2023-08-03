@@ -14,6 +14,7 @@ namespace jarinfectionscanneruniversal
 	{
 		private readonly IStorageItem? scanDirectory;
 		private readonly TextBlock outputTextBlock;
+		private readonly ScrollViewer? scroll;
 		
 		private static readonly byte[][] fileSignatures = new byte[][]
 		{
@@ -25,10 +26,11 @@ namespace jarinfectionscanneruniversal
 		public readonly List<string> problematicFiles = new();
 		private bool detectedFile = false;
 		
-		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock)
+		public Scanner(IStorageItem? _scanDirectory, TextBlock _outputTextBlock, ScrollViewer? _scroll)
 		{
 			scanDirectory = _scanDirectory;
 			outputTextBlock = _outputTextBlock;
+			scroll = _scroll;
 			detectedFile = false;
 		}
 		
@@ -115,6 +117,7 @@ namespace jarinfectionscanneruniversal
 		{
 			Dispatcher.UIThread.Invoke(() => {
 				outputTextBlock.Text += string.Format("\n[{0}]: {1}", DateTime.Now.ToString(MainWindow.dateFormat), msg);
+				scroll?.ScrollToEnd();
 			});
 		}
 	}

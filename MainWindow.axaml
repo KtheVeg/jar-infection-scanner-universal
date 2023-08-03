@@ -14,10 +14,11 @@
         <TextBox Watermark="Path to Folder" Width="600" Height="30" x:Name="pathInput" /><Button Content="Browse" Width="100" Height="30" Click="BrowseFilesClick"/><Button Content="Scan" Width="100" Height="30" Click="ScanClick" />
       </StackPanel>
     </DockPanel>
-    <Border BorderBrush="#888888" BorderThickness="1" Width="790" Height="550" Margin="5">
-      <ScrollViewer Width="780" Height="540" x:Name="outputScroll">
+    <Border BorderBrush="#888888" BorderThickness="1" Width="790" Height="520" Margin="5">
+      <ScrollViewer Width="780" Height="510" x:Name="outputScroll">
         <TextBlock Text="Select a path and click 'Scan' to get started" Width="780" TextWrapping="Wrap" x:Name="output" FontFamily="monospace" />
       </ScrollViewer>
     </Border>
+    <TextBlock Text="Parts of the scan code is taken from https://github.com/overwolf/jar-infection-scanner." />
   </StackPanel>
 </Window>

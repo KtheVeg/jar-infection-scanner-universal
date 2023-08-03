@@ -14,6 +14,7 @@ namespace jarinfectionscanneruniversal
 	{
 		private TextBox? pathTextBlock;
 		private readonly TextBlock? outputTextBlock;
+		private readonly ScrollViewer? scrollViewer;
 
 		public static readonly string dateFormat = "yyyy-MM-dd HH:mm:ss.fff";
 		
@@ -25,6 +26,7 @@ namespace jarinfectionscanneruniversal
 			// Get components
 			pathTextBlock = this.FindControl<TextBox>("pathInput");
 			outputTextBlock = this.FindControl<TextBlock>("output");
+			scrollViewer = this.FindControl<ScrollViewer>("outputScroll");
 		}
 
 		// public void Button_Click(object sender, RoutedEventArgs e)
@@ -79,18 +81,39 @@ namespace jarinfectionscanneruniversal
 				{
 					// Good directory. Start with scanning
 					outputTextBlock.Text += string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
-					Scanner scanner = new(scanDirectory, outputTextBlock);
+					Scanner scanner = new(scanDirectory, outputTextBlock, scrollViewer);
 					await scanner.Scan();
 					outputTextBlock.Text += string.Format("\n[{0}] Scan Finished.", DateTime.Now.ToString(dateFormat));
 					if (scanner.caughtFiles.Count != 0)
 					{
-						outputTextBlock.Text += string.Format("\n\n\n\n\n[{0}] WARNING: ONE OR MORE SUSPICIOUS FILES WERE FOUND.\nView below for the affected files", DateTime.Now.ToString(dateFormat));
+						outputTextBlock.Text += string.Format("\n\n\n\n\n[{0}] WARNING: ONE OR MORE INFECTED FILES WERE FOUND.\nView below for the affected files", DateTime.Now.ToString(dateFormat));
 						foreach (string file in scanner.caughtFiles)
 						{
 							outputTextBlock.Text += "\n" + file;
+							scrollViewer.ScrollToEnd();
+						}
+						outputTextBlock.Text += "\n\nIn addition to the found files, there were problematic files \nYou should delete these files.";
+						foreach (string file in scanner.problematicFiles)
+						{
+							outputTextBlock.Text += "\n" + file;
+							scrollViewer.ScrollToEnd();
 						}
 					} else {
-						outputTextBlock.Text += "\nThere was no infected files found.";
+						if (scanner.problematicFiles.Count != 0)
+						{
+							outputTextBlock.Text += "\n\nThere were a few files that had problems scanning. \nYou should delete these files.";
+							foreach (string file in scanner.problematicFiles)
+							{
+								outputTextBlock.Text += "\n" + file;
+								scrollViewer.ScrollToEnd();
+							}
+							outputTextBlock.Text += "\n\nThere were no infected files found.";
+						}
+						else
+						{
+							outputTextBlock.Text += "\n\nThere was no infected files found.";
+							scrollViewer.ScrollToEnd();
+						}
 					}
 				} else // Bad directory, let user know
 					outputTextBlock.Text += string.Format("\n[{0}] The path you provided is invalid.", DateTime.Now.ToString(dateFormat));
