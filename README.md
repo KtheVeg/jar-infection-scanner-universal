@@ -3,9 +3,6 @@ This tool uses some code from [overwolf/jar-infection-scanner](https://github.co
 
 This tool was also co-developped by [@SSUnlimited9](https://github.com/SSUnlimited9)
 
-## Warnings
-This tool is currently not fully developped. This tool should assist with finding potential malware, but in its current state is not fully tested. I'm not responsible for damages caused by the tool.
-
 ## Usage
 Requires .NET 6 runtime. You can install it using [this link](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
