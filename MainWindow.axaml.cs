@@ -80,7 +80,18 @@ namespace jarinfectionscanneruniversal
 					// Good directory. Start with scanning
 					outputTextBlock.Text += string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
 					Scanner scanner = new(scanDirectory, outputTextBlock);
-					// await scanner.Scan();
+					await scanner.Scan();
+					outputTextBlock.Text += string.Format("\n[{0}] Scan Finished.", DateTime.Now.ToString(dateFormat));
+					if (scanner.caughtFiles.Count != 0)
+					{
+						outputTextBlock.Text += string.Format("\n\n\n\n\n[{0}] WARNING: ONE OR MORE SUSPICIOUS FILES WERE FOUND.\nView below for the affected files", DateTime.Now.ToString(dateFormat));
+						foreach (string file in scanner.caughtFiles)
+						{
+							outputTextBlock.Text += "\n" + file;
+						}
+					} else {
+						outputTextBlock.Text = "\nThere was no infected files found.";
+					}
 				} else // Bad directory, let user know
 					outputTextBlock.Text += string.Format("\n[{0}] The path you provided is invalid.", DateTime.Now.ToString(dateFormat));
 			} else
@@ -88,7 +99,6 @@ namespace jarinfectionscanneruniversal
 			#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 			
-			// Scanner scan = new Scanner();
 		}
 		private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 	}

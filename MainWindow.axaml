@@ -1,15 +1,19 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:primitives="clr-namespace:Avalonia.Controls.Primitives;assembly=Avalonia.Controls"
         x:Class="jarinfectionscanneruniversal.MainWindow"
         Title="Universal Jar Scanner"
+        CanResize="false"
+        MinWidth="800" MaxWidth="800"
+        MinHeight="600" MaxHeight="600"
         Width="800" Height="600">
 
   <StackPanel Width="800" Height="600">
-    <ViewBox Width="800" Height="40">
+    <DockPanel Width="800" Height="30">
       <StackPanel Orientation="Horizontal" Width="800" Height="30">
-        <TextBox Watermark="Path to File/Folder" Width="600" Height="30" x:Name="pathInput" /><Button Content="Browse" Width="100" Height="30" Click="BrowseFilesClick"/><Button Content="Scan" Width="100" Height="30" Click="ScanClick"/>
+        <TextBox Watermark="Path to Folder" Width="600" Height="30" x:Name="pathInput" /><Button Content="Browse" Width="100" Height="30" Click="BrowseFilesClick"/><Button Content="Scan" Width="100" Height="30" Click="ScanClick" />
       </StackPanel>
-    </ViewBox>
+    </DockPanel>
     <Border BorderBrush="#888888" BorderThickness="1" Width="790" Height="550" Margin="5">
       <ScrollViewer Width="780" Height="540" x:Name="outputScroll">
         <TextBlock Text="Select a path and click 'Scan' to get started" Width="780" TextWrapping="Wrap" x:Name="output" FontFamily="monospace" />
