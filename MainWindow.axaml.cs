@@ -90,7 +90,7 @@ namespace jarinfectionscanneruniversal
 							outputTextBlock.Text += "\n" + file;
 						}
 					} else {
-						outputTextBlock.Text = "\nThere was no infected files found.";
+						outputTextBlock.Text += "\nThere was no infected files found.";
 					}
 				} else // Bad directory, let user know
 					outputTextBlock.Text += string.Format("\n[{0}] The path you provided is invalid.", DateTime.Now.ToString(dateFormat));
