@@ -3,10 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using System.Collections.Generic;
 using System;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 namespace jarinfectionscanneruniversal
@@ -30,6 +28,7 @@ namespace jarinfectionscanneruniversal
 			outputTextBlock = this.FindControl<TextBlock>("output");
 			scrollViewer = this.FindControl<ScrollViewer>("outputScroll");
 			progressBar = this.FindControl<ProgressBar>("progress");
+			Hide();
 		}
 
 
@@ -41,15 +40,11 @@ namespace jarinfectionscanneruniversal
 			
 			pathTextBlock ??= this.FindControl<TextBox>("pathInput");
 			
+			
 			if (paths.Count > 0 && pathTextBlock != null)
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-				{
-					pathTextBlock.Text = paths[0].Path.ToString().Substring(8);
-				}
-				else
-				{
-					pathTextBlock.Text = paths[0].Path.ToString().Substring(7);
-				}
+				pathTextBlock.Text = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+					? paths[0].Path.ToString().Substring(8)
+					: paths[0].Path.ToString().Substring(7);
 		}
 		public async void ScanClick(object sender, RoutedEventArgs e)
 		{
@@ -67,7 +62,11 @@ namespace jarinfectionscanneruniversal
 				{
 					this.FindControl<Button>("scanButton").IsEnabled = false;
 					// Good directory. Start with scanning
-					outputTextBlock.Text = string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), scanDirectory.Path.ToString().Substring(7));
+					outputTextBlock.Text = string.Format("\n[{0}] Scanning: {1}...", DateTime.Now.ToString(dateFormat), 
+						RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+							? scanDirectory.Path.ToString().Substring(8)
+							: scanDirectory.Path.ToString().Substring(7)
+					);
 					Scanner scanner = new(scanDirectory, outputTextBlock, scrollViewer, progressBar);
 					progressBar.ShowProgressText = true;
 					await scanner.Scan();
@@ -84,7 +83,7 @@ namespace jarinfectionscanneruniversal
 						foreach (string file in scanner.problematicFiles)
 						{
 							outputTextBlock.Text += "\n" + file;
-							outputTextBlock.Text += "\n" + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)];
+							outputTextBlock.Text += " " + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)];
 							scrollViewer.ScrollToEnd();
 						}
 					} else {
@@ -94,7 +93,7 @@ namespace jarinfectionscanneruniversal
 							foreach (string file in scanner.problematicFiles)
 							{
 								outputTextBlock.Text += "\n" + file;
-								outputTextBlock.Text += "\n(Reason: " + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)] + ")";
+								outputTextBlock.Text += " (Reason: " + scanner.problematicReason[scanner.problematicFiles.IndexOf(file)] + ")";
 								scrollViewer.ScrollToEnd();
 							}
 							outputTextBlock.Text += "\n\nThere were no infected files found.";
